@@ -8,6 +8,7 @@ import { Student } from '../../student/model/student.model';
 import { StudentService } from '../../student/services/student.service';
 import { CourseService } from '../../course/services/course.service';
 import { of, NEVER } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-add-examscore',
   templateUrl: './add-examscore.component.html',
@@ -22,7 +23,8 @@ export class AddExamscoreComponent {
   constructor(private examscoreService: ExamScoreService,
     private studentService: StudentService,
     private courseService: CourseService,
-    private router: Router) {
+    private router: Router,
+    private toastr: ToastrService) {
     this.model = {
       stId:'',
       cId:'',
@@ -51,9 +53,11 @@ export class AddExamscoreComponent {
     this.addExamScoreSubscribtion = this.examscoreService.addExamScore(this.model)
     .subscribe({
       next: (response) => {
+        this.toastr.success(response, 'Sucess', { positionClass: 'toast-bottom-right' });
         this.router.navigateByUrl('/admin/examscores');
       },
       error: (error) => {
+        this.toastr.error(error.error, 'Error', { positionClass: 'toast-bottom-right' });
         // Handle the error
       }
     })

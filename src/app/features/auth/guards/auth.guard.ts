@@ -12,10 +12,10 @@ export const authGuard: CanActivateFn = (route, state) => {
 
   // Check for the JWT Token
   let token = cookieService.get('Authorization');
-  console.log("Token: ",token);
-  console.log("user: ",user);
+  //console.log("Token: ",token);
+  //console.log("user: ",user);
   if (token && user) {
-    console.log("111");
+    //console.log("111");
     token = token.replace('Bearer ', '');
     const decodedToken: any = jwtDecode(token);
 
@@ -25,7 +25,7 @@ export const authGuard: CanActivateFn = (route, state) => {
 
     if (expirationDate < currentTime) {
       // Logout
-      console.log("here");
+      //console.log("here");
       authService.refreshToken();
       return true;
     } else {
@@ -35,7 +35,7 @@ export const authGuard: CanActivateFn = (route, state) => {
     }
   } else {
     // Logout
-    console.log("1112");
+    //console.log("1112");
     authService.logout();
     return router.createUrlTree(['/login'], { queryParams: { returnUrl: state.url } })
   }

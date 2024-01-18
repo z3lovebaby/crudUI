@@ -4,6 +4,7 @@ import { Student } from '../model/student.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { StudentService } from '../services/student.service';
 import { UpdateStudentRequest } from '../model/update-student-request.model';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-edit-student',
@@ -15,10 +16,11 @@ export class EditStudentComponent implements OnInit, OnDestroy{
   paramsSubscription?: Subscription;
   editStudentSubscription?: Subscription;
   student?: Student;
-
+  showModal = false;
   constructor(private route: ActivatedRoute,
     private studentService: StudentService,
-    private router: Router) {
+    private router: Router,
+    private toastr: ToastrService) {
   }
 
   ngOnInit(): void {
@@ -39,7 +41,27 @@ export class EditStudentComponent implements OnInit, OnDestroy{
       }
     });
   }
+  onDelete() {
+    this.showModal = true;
+    console.log(this.showModal);
+  }
 
+  closeModal() {
+    this.showModal = false;
+  }
+  onConfirm(): void {
+    if (this.id) {
+      this.studentService.deleteStudent(this.id)
+      .subscribe({
+        next: (response) => {
+          this.toastr.success(response, 'Sucess', { positionClass: 'toast-bottom-right' });
+          this.router.navigateByUrl('/admin/students');
+        }
+      })
+    }
+
+    this.showModal = false;
+  }
   onFormSubmit(): void {
     const updateStudentRequest: UpdateStudentRequest = {
       id:this.student?.id ?? '',
@@ -60,16 +82,6 @@ export class EditStudentComponent implements OnInit, OnDestroy{
     }
   }
 
-  onDelete(): void {
-    if (this.id) {
-      this.studentService.deleteStudent(this.id)
-      .subscribe({
-        next: (response) => {
-          this.router.navigateByUrl('/admin/students');
-        }
-      })
-    }
-  }
 
   ngOnDestroy(): void {
     this.paramsSubscription?.unsubscribe();

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { SignupRequest } from '../../../features/auth/models/signup-request.model';
 import { AuthService } from '../../../features/auth/services/auth.service';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
@@ -10,7 +11,8 @@ import { Router } from '@angular/router';
 export class SignupComponent {
   model:SignupRequest;
   constructor(private authService: AuthService,
-    private router: Router) {
+    private router: Router,
+    private toastr: ToastrService) {
     this.model = {
       firstName: '',
       lastName: '',
@@ -26,6 +28,7 @@ export class SignupComponent {
       next: (response) => {
         // Set User
         // Redirect back to Home
+        this.toastr.success('Add successfully', 'Sucess', { positionClass: 'toast-bottom-right' });
         this.router.navigateByUrl('/');
 
       }

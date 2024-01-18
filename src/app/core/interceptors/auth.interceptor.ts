@@ -52,7 +52,6 @@ export class AuthInterceptor implements HttpInterceptor {
     return this.authService.refreshToken().pipe(
       switchMap((newToken: string) => {
         // Update the stored token in the cookie or wherever you store it
-        this.cookieService.set('Authorization', newToken);
 
         // Retry the request with the new token
         const authRequest = this.addAuthorizationHeader(request);

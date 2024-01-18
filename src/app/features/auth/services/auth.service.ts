@@ -65,6 +65,7 @@ export class AuthService {
     console.log('fail');
     localStorage.clear();
     this.cookieService.delete('Authorization', '/');
+    this.cookieService.delete('Refresh-Token', '/');
     this.$user.next(undefined);
   }
 
@@ -88,9 +89,9 @@ export class AuthService {
       .pipe(
         map(response => {
           // Assuming the server returns a LoginResponseDto object
-          const newAccessToken = response?.Token;
-          const newRefreshToken = response?.refreshToken;
-          console.log('response: ',response);
+          const newAccessToken = response?.token;
+          const newRefreshToken = response?.reToken;
+          console.log('response 1: ',response.token);
           if (!newAccessToken||!newRefreshToken) {
             // Handle the case where the server did not return a new access token
             throw new Error('No new access token received.');
@@ -100,10 +101,10 @@ export class AuthService {
           //this.cookieService.set('Authorization', newAccessToken);
           //this.cookieService.set('Refresh-Token', newRefreshToken);
           this.cookieService.set('Authorization', `Bearer ${newAccessToken}`,
-            undefined, '/', undefined, true, 'Strict');
+            undefined, '/', undefined, false, 'Strict');
 
           this.cookieService.set('Refresh-Token', `${newRefreshToken}`,
-            undefined, '/', undefined, true, 'Strict');
+            undefined, '/', undefined, false, 'Strict');
           return newAccessToken;
         })
       );

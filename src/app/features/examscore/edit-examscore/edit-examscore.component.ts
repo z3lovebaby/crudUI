@@ -4,6 +4,7 @@ import { ExamScore } from '../model/examscore.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ExamScoreService } from '../services/exam-score.service';
 import { UpdateExamScoreRequest } from '../model/update-examscore-request.model';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-edit-examscore',
@@ -15,10 +16,11 @@ export class EditExamscoreComponent implements OnInit, OnDestroy{
   paramsSubscription?: Subscription;
   editExamScoreSubscription?: Subscription;
   examscore?: ExamScore;
-
+  showModal = false;
   constructor(private route: ActivatedRoute,
     private examscoreService: ExamScoreService,
-    private router: Router) {
+    private router: Router,
+    private toastr: ToastrService) {
   }
 
   ngOnInit(): void {
@@ -39,7 +41,25 @@ export class EditExamscoreComponent implements OnInit, OnDestroy{
       }
     });
   }
+  onDelete() {
+    this.showModal = true;
+  }
 
+  closeModal() {
+    this.showModal = false;
+  }
+  onConfirm(): void {
+    if (this.id) {
+      this.examscoreService.deleteExamScore(this.id)
+      .subscribe({
+        next: (response) => {
+          this.toastr.success(response, 'Sucess', { positionClass: 'toast-bottom-right' });
+          this.router.navigateByUrl('/admin/examscores');
+        }
+      })
+    }
+    this.showModal = false;
+  }
   onFormSubmit(): void {
     const updateExamScoreRequest: UpdateExamScoreRequest = {
       id:this.examscore?.id??'',
@@ -57,17 +77,6 @@ export class EditExamscoreComponent implements OnInit, OnDestroy{
           this.router.navigateByUrl('/admin/examscores');
         }
       });
-    }
-  }
-
-  onDelete(): void {
-    if (this.id) {
-      this.examscoreService.deleteExamScore(this.id)
-      .subscribe({
-        next: (response) => {
-          this.router.navigateByUrl('/admin/examscores');
-        }
-      })
     }
   }
 

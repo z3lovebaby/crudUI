@@ -23,6 +23,7 @@ import { AddExamscoreComponent } from './features/examscore/add-examscore/add-ex
 import { EditExamscoreComponent } from './features/examscore/edit-examscore/edit-examscore.component';
 import { ScoreCourseComponent } from './features/examscore/score-course/score-course.component';
 import { ScoreStudentComponent } from './features/examscore/score-student/score-student.component';
+import { ToastrModule } from 'ngx-toastr';
 @NgModule({
   declarations: [
     AppComponent,
@@ -50,6 +51,7 @@ import { ScoreStudentComponent } from './features/examscore/score-student/score-
     HttpClientModule,
     BrowserAnimationsModule,
     MatSlideToggleModule,
+    ToastrModule.forRoot(),
   ],
   providers: [
     {

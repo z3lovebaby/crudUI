@@ -70,7 +70,29 @@
             (click)="onDelete()"
           >Delete</button>
         </div>
-
+        <div *ngIf="!showModal; else show"></div>
+        <ng-template #show>
+          <!-- Bootstrap Modal -->
+          <div class="modal fade show" tabindex="-1" role="dialog" style="display: block;" (click)="closeModal()">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Confirmation</h5>
+                  <button type="button" class="close" aria-label="Close" (click)="closeModal()">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  Are you sure you want to delete?
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancel</button>
+                  <button type="button" class="btn btn-danger" (click)="onConfirm()">Delete</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-template>
       </div>
 
     </form>

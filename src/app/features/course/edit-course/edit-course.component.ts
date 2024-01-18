@@ -4,6 +4,7 @@ import { Course } from '../model/course,model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CourseService } from '../services/course.service';
 import { UpdateCourseRequest } from '../model/update-category-request.model';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-edit-course',
@@ -15,10 +16,12 @@ export class EditCourseComponent implements OnInit, OnDestroy{
   paramsSubscription?: Subscription;
   editCourseSubscription?: Subscription;
   course?: Course;
+  showModal = false;
 
   constructor(private route: ActivatedRoute,
     private courseService: CourseService,
-    private router: Router) {
+    private router: Router,
+    private toastr: ToastrService) {
   }
 
   ngOnInit(): void {
@@ -39,6 +42,14 @@ export class EditCourseComponent implements OnInit, OnDestroy{
       }
     });
   }
+  onDelete() {
+    this.showModal = true;
+    console.log(this.showModal);
+  }
+
+  closeModal() {
+    this.showModal = false;
+  }
 
   onFormSubmit(): void {
     const updateCourseRequest: UpdateCourseRequest = {
@@ -57,15 +68,18 @@ export class EditCourseComponent implements OnInit, OnDestroy{
     }
   }
 
-  onDelete(): void {
+  onConfirm(): void {
     if (this.id) {
       this.courseService.deleteCourse(this.id)
       .subscribe({
         next: (response) => {
+          this.toastr.success(response, 'Sucess', { positionClass: 'toast-bottom-right' });
           this.router.navigateByUrl('/admin/courses');
         }
       })
+      
     }
+    this.showModal = false;
   }
 
   ngOnDestroy(): void {
