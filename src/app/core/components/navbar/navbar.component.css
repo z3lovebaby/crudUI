@@ -1,0 +1,8 @@
+.navbar-nav .nav-link {
+  color: black !important;
+}
+
+/* Optionally, you can style the active link differently */
+.navbar-nav .nav-item.active .nav-link {
+  color: red !important; /* Change to your preferred active link color */
+}

@@ -1,0 +1,37 @@
+<div class="container">
+
+    <h1 class="mt-3">Student List</h1>
+  
+    <div class="d-flex justify-content-end mt-3">
+      <a [routerLink]="['/admin/students/add']" class="btn btn-primary">Add Student</a>
+    </div>
+  
+    <ng-container *ngIf="students$ | async as students">
+      <table class="table table-bordered mt-3">
+        <thead>
+          <tr>
+            <th>Student ID</th>
+            <th>Student Name</th>
+            <th>DateOfBirth</th>
+            <th>Class/Major</th>
+            <th> </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let student of students">
+            <td>{{student.id}}</td>
+            <td>
+              <a [routerLink]="['/admin/scoreOfStudent', student.id]" style="text-decoration: none;">{{student.name}}</a>    
+            </td>
+            <td>{{student.date}}</td>
+            <td>{{student.class}}</td>
+            <td>
+              <a class="btn btn-light" [routerLink]="['/admin/student', student.id]">Edit</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </ng-container>
+  
+  </div>
+  

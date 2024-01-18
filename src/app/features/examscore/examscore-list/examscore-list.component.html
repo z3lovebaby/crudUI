@@ -1,0 +1,39 @@
+<div class="container">
+
+    <h1 class="mt-3">ExamScoreList</h1>
+  
+    <div class="d-flex justify-content-end mt-3">
+      <a [routerLink]="['/admin/examscores/add']" class="btn btn-primary">Add Student</a>
+    </div>
+  
+    <ng-container *ngIf="examscores$ | async as examscores">
+      <table class="table table-bordered mt-3">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Student ID</th>
+            <th>Student Name</th>
+            <th>Course</th>
+            <th>Class/Major</th>
+            <th>Score</th>
+            <th> </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let examscore of examscores">
+            <td>{{examscore.id}}</td>
+            <td>{{examscore.stId}}</td>
+            <td>{{examscore.student.name}}</td>
+            <td>{{examscore.course.nameCourse}}</td>
+            <td>{{examscore.student.class}}</td>
+            <td>{{examscore.score}}</td>
+            <td>
+              <a class="btn btn-light" [routerLink]="['/admin/examscore', examscore.id]">Edit</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </ng-container>
+  
+  </div>
+  

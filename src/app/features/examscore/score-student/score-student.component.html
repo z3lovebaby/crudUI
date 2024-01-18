@@ -1,0 +1,35 @@
+<div class="container">
+
+    <h1 class="mt-3">ExamScoreList</h1>
+  
+    <div class="d-flex justify-content-end mt-3">
+      <a [routerLink]="['/admin/students']" class="btn btn-primary">Back to student</a>
+    </div>
+  
+    <ng-container *ngIf="scorestudent$ | async as scorestudents;else notfound">
+      <table class="table table-bordered mt-3">
+        <thead>
+          <tr>
+            <th>Student ID</th>
+            <th>Name</th>
+            <th>Course</th>
+            <th>Score</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let scorestudent of scorestudents">
+            <td>{{scorestudent.id}}</td>
+            <td>{{scorestudent.name}}</td>
+            <td>{{scorestudent.course}}</td>
+            <td>{{scorestudent.score}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </ng-container>
+    <ng-template #notfound>
+        <div class="alert alert-warning mt-3" role="alert">
+          No data for this student
+        </div>
+      </ng-template>
+  </div>
+  

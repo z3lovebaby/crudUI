@@ -1,0 +1,33 @@
+<div class="container">
+
+    <h1 class="mt-3">Course List</h1>
+  
+    <div class="d-flex justify-content-end mt-3">
+      <a [routerLink]="['/admin/courses/add']" class="btn btn-primary">Add Course</a>
+    </div>
+  
+    <ng-container *ngIf="courses$ | async as courses">
+      <table class="table table-bordered mt-3">
+        <thead>
+          <tr>
+            <th>Course ID</th>
+            <th>Course Name</th>
+            <th> </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let course of courses">
+            <td>{{course.id}}</td>
+            <td>
+              <a [routerLink]="['/admin/studentOfCourse', course.id]" style="text-decoration: none;">{{course.nameCourse}}</a>  
+            </td>
+            <td>
+              <a class="btn btn-light" [routerLink]="['/admin/course', course.id]">Edit</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </ng-container>
+  
+  </div>
+  
