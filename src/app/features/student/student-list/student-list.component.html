@@ -1,11 +1,11 @@
 <div class="container">
 
     <h1 class="mt-3">Student List</h1>
-  
+    <ng-container  *ngIf="user?.roles?.includes('Writer')">
     <div class="d-flex justify-content-end mt-3">
       <a [routerLink]="['/admin/students/add']" class="btn btn-primary">Add Student</a>
     </div>
-  
+  </ng-container>
     <ng-container *ngIf="students$ | async as students">
       <table class="table table-bordered mt-3">
         <thead>

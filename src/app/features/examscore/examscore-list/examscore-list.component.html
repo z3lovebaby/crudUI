@@ -1,21 +1,56 @@
 <div class="container">
+  <h1 class="mt-3">ExamScoreList</h1>
 
-    <h1 class="mt-3">ExamScoreList</h1>
-  
-    <div class="d-flex justify-content-end mt-3">
-      <a [routerLink]="['/admin/examscores/add']" class="btn btn-primary">Add Student</a>
-    </div>
-  
-    <ng-container *ngIf="examscores$ | async as examscores">
+  <div class="d-flex justify-content-end mt-3">
+    <a [routerLink]="['/admin/examscores/add']" class="btn btn-primary">Add Examscore</a>
+  </div>
+
+  <ng-container>
+    <div class="table-responsive">
       <table class="table table-bordered mt-3">
         <thead>
           <tr>
             <th>ID</th>
-            <th>Student ID</th>
-            <th>Student Name</th>
-            <th>Course</th>
-            <th>Class/Major</th>
-            <th>Score</th>
+            <th>
+              <input class=""form-control m-2 
+              [(ngModel)] = "stIDFilter"
+              (keyup)="FilterFn()"
+              placeholder="Filter"
+              >
+              Student ID
+            </th>
+            <th>
+              <input class=""form-control m-2 
+              [(ngModel)] = "nameFilter"
+              (keyup)="FilterFn()"
+              placeholder="Filter"
+              >
+              Student Name
+            </th>
+            <th>
+              <input class=""form-control m-2 
+              [(ngModel)] = "cFilter"
+              (input)="FilterFn()"
+              placeholder="Filter"
+              >
+              Course
+            </th>
+            <th>
+              <input class=""form-control m-2 
+              [(ngModel)] = "classFilter"
+              (input)="FilterFn()"
+              placeholder="Filter"
+              >
+              Class/Major
+            </th>
+            <th>
+              <input class=""form-control m-2 
+              [(ngModel)] = "scoreFilter"
+              (input)="FilterFn()"
+              placeholder="Filter"
+              >
+              Score
+            </th>
             <th> </th>
           </tr>
         </thead>
@@ -33,7 +68,6 @@
           </tr>
         </tbody>
       </table>
-    </ng-container>
-  
-  </div>
-  
+    </div>
+  </ng-container>
+</div>

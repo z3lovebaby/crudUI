@@ -10,13 +10,16 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 import { CookieService } from 'ngx-cookie-service';
 import { AuthService } from '../../features/auth/services/auth.service';
+import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-
   constructor(
     private cookieService: CookieService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router,
+    private toastr: ToastrService
   ) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
@@ -59,7 +62,8 @@ export class AuthInterceptor implements HttpInterceptor {
       }),
       catchError((error) => {
         // If token refresh fails, redirect to login or handle as needed
-        // For simplicity, we rethrow the error here
+        this.authService.logout();
+        this.toastr.error(error.error, 'Error', { positionClass: 'toast-bottom-right' });
         return throwError(error);
       })
     );

@@ -26,7 +26,10 @@ export const authGuard: CanActivateFn = (route, state) => {
     if (expirationDate < currentTime) {
       // Logout
       //console.log("here");
-      authService.refreshToken();
+      var newAccessTokenCheck = authService.refreshToken();
+      if(newAccessTokenCheck==null){
+        authService.logout();
+      }
       return true;
     } else {
       // Token is still valid

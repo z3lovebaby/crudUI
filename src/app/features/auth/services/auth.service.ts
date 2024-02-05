@@ -8,6 +8,7 @@ import { User } from '../models/user.model';
 import { CookieService } from 'ngx-cookie-service';
 import { SignupRequest } from '../models/signup-request.model';
 import { Token } from '../models/tokens.model';
+import { NavigationExtras, Router } from '@angular/router';
 @Injectable({
   providedIn: 'root'
 })
@@ -16,6 +17,7 @@ export class AuthService {
   $user = new BehaviorSubject<User | undefined>(undefined);
 
   constructor(private http: HttpClient,
+    private router: Router,
     private cookieService: CookieService) { }
 
   login(request: LoginRequest): Observable<LoginResponse> {
@@ -67,6 +69,11 @@ export class AuthService {
     this.cookieService.delete('Authorization', '/');
     this.cookieService.delete('Refresh-Token', '/');
     this.$user.next(undefined);
+    // Redirect to the /login component
+    const navigationExtras: NavigationExtras = {
+      queryParams: { returnUrl: this.router.routerState.snapshot.url },
+    };
+    this.router.navigate(['/login'], navigationExtras);
   }
 
   refreshToken(): Observable<string> {
@@ -90,9 +97,9 @@ export class AuthService {
         map(response => {
           // Assuming the server returns a LoginResponseDto object
           const newAccessToken = response?.token;
-          const newRefreshToken = response?.reToken;
+          //const newRefreshToken = response?.reToken;
           console.log('response 1: ',response.token);
-          if (!newAccessToken||!newRefreshToken) {
+          if (!newAccessToken) {
             // Handle the case where the server did not return a new access token
             throw new Error('No new access token received.');
           }
@@ -103,8 +110,6 @@ export class AuthService {
           this.cookieService.set('Authorization', `Bearer ${newAccessToken}`,
             undefined, '/', undefined, false, 'Strict');
 
-          this.cookieService.set('Refresh-Token', `${newRefreshToken}`,
-            undefined, '/', undefined, false, 'Strict');
           return newAccessToken;
         })
       );
