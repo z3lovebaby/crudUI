@@ -28,6 +28,7 @@ const routes: Routes = [
     path: 'signup',
     component: SignupComponent
   },
+
   {
     path: 'admin/courses',
     component: CourseListComponent,

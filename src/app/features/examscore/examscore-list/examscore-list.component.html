@@ -4,8 +4,8 @@
   <div class="d-flex justify-content-end mt-3">
     <a [routerLink]="['/admin/examscores/add']" class="btn btn-primary">Add Examscore</a>
   </div>
-
-  <ng-container>
+  <br>
+  <!-- <ng-container>
     <div class="table-responsive">
       <table class="table table-bordered mt-3">
         <thead>
@@ -54,7 +54,7 @@
             <th> </th>
           </tr>
         </thead>
-        <tbody>
+        <!-- <tbody>
           <tr *ngFor="let examscore of examscores">
             <td>{{examscore.id}}</td>
             <td>{{examscore.stId}}</td>
@@ -66,8 +66,81 @@
               <a class="btn btn-light" [routerLink]="['/admin/examscore', examscore.id]">Edit</a>
             </td>
           </tr>
-        </tbody>
-      </table>
+        </tbody> -->
+      <!-- </table>
+    </div> -->
+
+  <!-- </ng-container> -->
+  <div>
+    <div>
+      <mat-form-field *ngFor="let filter of filterSelectObj" style="margin-left: 15px;">
+        <mat-label>Filter {{filter.name}}</mat-label>
+        <select matNativeControl name="{{filter.columnProp}}" [(ngModel)]="filter.modelValue"
+          (change)="filterChange(filter,$event)">
+          <option value="">-- Select {{filter.name}} --</option>
+          <option [value]="item" *ngFor="let item of filter.options">{{item}}</option>
+        </select>
+      </mat-form-field>
+      &nbsp;
+      <button mat-flat-button color="warn" (click)="resetFilters()">Reset</button>
     </div>
-  </ng-container>
+    <table mat-table matSort [dataSource]="dataSource">
+      <tbody>
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header > 
+          ID 
+        </th>
+        <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="stId">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> StudentId </th>
+        <td mat-cell *matCellDef="let element"> {{element.stId}} </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="studentName">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> StudentName </th>
+        <td mat-cell *matCellDef="let element"> {{element.student.name}} </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="courseName">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Course </th>
+        <td mat-cell *matCellDef="let element"> {{element.course.nameCourse}} </td>
+      </ng-container>
+      <ng-container matColumnDef="studentClass">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Class/Major </th>
+        <td mat-cell *matCellDef="let element"> {{element.student.class}} </td>
+      </ng-container>
+      <ng-container matColumnDef="score">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Score </th>
+        <td mat-cell *matCellDef="let element"> {{element.score}} </td>
+      </ng-container>
+      
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let element">
+          <a class="btn btn-light" [routerLink]="['/admin/examscore', element.id]">Edit</a>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </tbody>
+    </table>
+  
+    <table>
+      <tr *ngIf="!dataSource.data.length">
+        <td style="text-align: center;" [attr.colspan]="displayedColumns.length">
+          No Records Found!
+        </td>
+      </tr>
+    </table>
+  
+  </div>
+  <mat-paginator
+    [pageSize]="1"
+    [pageSizeOptions]="[1, 2, 3]"
+    showFirstLastButtons
+  >
+  </mat-paginator>
 </div>
