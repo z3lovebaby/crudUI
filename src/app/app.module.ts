@@ -9,7 +9,7 @@ import { NavbarComponent } from './core/components/navbar/navbar.component';
 import { HomeComponent } from './core/components/home/home.component';
 import { LoginComponent } from './features/auth/login/login.component';
 import { SignupComponent } from './core/components/signup/signup.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 import { CourseListComponent } from './features/course/course-list/course-list.component';
@@ -31,6 +31,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import { AsyncPipe } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
 @NgModule({
   declarations: [
     AppComponent,
@@ -66,6 +68,9 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
     MatSelectModule,
     MatInputModule,
     MatAutocompleteModule,
+    ReactiveFormsModule,
+    AsyncPipe,
+    MatIconModule
   ],
   providers: [
     {

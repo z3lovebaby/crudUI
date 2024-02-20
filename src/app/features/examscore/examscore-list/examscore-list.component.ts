@@ -6,6 +6,7 @@ import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
 import { FilterSelectOption } from '../model/filter.model';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-examscore-list',
@@ -20,6 +21,7 @@ export class ExamscoreListComponent implements OnInit{
   examscores$!: Observable<ExamScore[]>;
   examscoresFilter:any=[];
   examscores:any=[];
+  myControl = new FormControl('');
     stIDFilter = "";
     nameFilter = "";
     cFilter = "";
@@ -30,35 +32,40 @@ export class ExamscoreListComponent implements OnInit{
   constructor(private examscoreService: ExamScoreService) {
     this.filterSelectObj = [
       {
-        name: 'STUDENTID',
+        name: 'student id',
         columnProp: 'stId',
         options: [],
         selectedValue:'',
-        inputValue:''
+        inputValue:'',
+        filteredOptions:[],
       }, {
-        name: 'NAME',
+        name: 'name',
         columnProp: 'student.name',
         options: [],
         selectedValue:'',
-        inputValue:''
+        inputValue:'',
+        filteredOptions:[],
       }, {
-        name: 'COURSE',
+        name: 'course',
         columnProp: 'course.nameCourse',
         options: [],
         selectedValue:'',
-        inputValue:''
+        inputValue:'',
+        filteredOptions:[],
       }, {
-        name: 'CLASS',
+        name: 'class',
         columnProp: 'student.class',
         options: [],
         selectedValue:'',
-        inputValue:''
+        inputValue:'',
+        filteredOptions:[],
       }, {
-        name: 'SCORE',
+        name: 'score',
         columnProp: 'score',
         options: [],
         selectedValue:'',
-        inputValue:''
+        inputValue:'',
+        filteredOptions:[],
       }
     ]
   }
@@ -66,6 +73,9 @@ export class ExamscoreListComponent implements OnInit{
   ngOnInit(): void {
     this.FetchData();
     this.dataSource.filterPredicate = this.createFilter()
+    this.filterSelectObj.forEach(obj => {
+      obj.filteredOptions = this._filter(obj.inputValue || '', obj.options);
+    });
   }
   // getFilterObject(fullObj: any[], key: string): any[] {
   //   const uniqChk: any[] = [];
@@ -77,6 +87,10 @@ export class ExamscoreListComponent implements OnInit{
   //   });
   //   return uniqChk;
   // }
+  private _filter(value: string, options: string[]): string[] {
+    const filterValue = value.toLowerCase();
+    return options.filter(option => option.toLowerCase().includes(filterValue));
+  }
   getFilterObject(fullObj: any[], key: string): any[] {
     const uniqChk: any[] = [];
     fullObj.forEach((obj: any) => {
@@ -102,6 +116,7 @@ export class ExamscoreListComponent implements OnInit{
         console.log('aaab ',this.dataSource);
         this.filterSelectObj.filter((o) => {
           o.options = this.getFilterObject(examscore, o.columnProp);
+          o.filteredOptions = o.options
         });
       },
       error: (error) => {
@@ -111,13 +126,37 @@ export class ExamscoreListComponent implements OnInit{
     
   }
   // Called on Filter change
-  filterChange(filter:FilterSelectOption, event:any) {
-    //let filterValues = {}
-    this.filterValues[filter.columnProp] = event.target.value.trim().toLowerCase()
-    this.dataSource.filter = JSON.stringify(this.filterValues)
+  // filterChange(filter:FilterSelectOption, event:any) {
+  //   //let filterValues = {}
+  //   this.filterValues[filter.columnProp] = event.target.value.trim().toLowerCase()
+  //   this.dataSource.filter = JSON.stringify(this.filterValues)
     
-    console.log('JSON: ',JSON.stringify(this.filterValues));
+  //   console.log('JSON: ',JSON.stringify(this.filterValues));
+  // }
+
+  filterChange(filter: FilterSelectOption, event: any) {
+    let value: string;
+    
+    // Kiểm tra xem sự kiện có phải từ autocomplete hay không
+    if (event.option) {
+      // Nếu là sự kiện từ autocomplete, lấy giá trị của option được chọn
+      value = event.option.value.toString();
+    } else {
+      // Nếu là sự kiện từ trường input, lấy giá trị từ target
+      value = event.target.value.trim().toLowerCase();
+    }
+    // Lưu giá trị vào filterValues
+    this.filterValues[filter.columnProp] = value;
+    filter.filteredOptions = filter.options.filter(option =>
+      option.toString().toLowerCase().includes(value)
+    );
+    console.log('flter: ',filter.options)
+    // Áp dụng bộ lọc mới vào dataSource
+    this.dataSource.filter = JSON.stringify(this.filterValues);
+  
+    console.log('JSON: ', JSON.stringify(this.filterValues));
   }
+  
   onInputChange(filter:FilterSelectOption, event:any){}
   getValueByNestedKey(obj:any, key:string) {
     if (key.includes('.')) {

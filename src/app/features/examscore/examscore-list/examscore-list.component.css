@@ -1,0 +1,13 @@
+.mat-form-field {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .mat-form-field .mat-select {
+    margin-top: 8px; /* Khoảng cách giữa select và label */
+  }
+  
+  .mat-form-field .mat-input-element {
+    margin-top: 8px; /* Khoảng cách giữa input và label */
+  }
+  

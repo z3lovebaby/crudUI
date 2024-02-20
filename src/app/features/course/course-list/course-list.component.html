@@ -6,28 +6,45 @@
       <a [routerLink]="['/admin/courses/add']" class="btn btn-primary">Add Course</a>
     </div>
   
-    <ng-container *ngIf="courses$ | async as courses">
-      <table class="table table-bordered mt-3">
-        <thead>
-          <tr>
-            <th>Course ID</th>
-            <th>Course Name</th>
-            <th> </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let course of courses">
-            <td>{{course.id}}</td>
-            <td>
-              <a [routerLink]="['/admin/studentOfCourse', course.id]" style="text-decoration: none;">{{course.nameCourse}}</a>  
-            </td>
-            <td>
-              <a class="btn btn-light" [routerLink]="['/admin/course', course.id]">Edit</a>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <ng-container>
+      <mat-table class="table table-bordered mt-3" [dataSource]="dataSource">
+        <ng-container matColumnDef="id">
+          <mat-header-cell *matHeaderCellDef> Course ID </mat-header-cell>
+          <mat-cell *matCellDef="let course"> {{course.id}} </mat-cell>
+        </ng-container>
+      
+        <ng-container matColumnDef="courseName">
+          <mat-header-cell *matHeaderCellDef> Course Name </mat-header-cell>
+          <mat-cell *matCellDef="let course">
+            <a [routerLink]="['/admin/studentOfCourse', course.id]" style="text-decoration: none;">{{course.nameCourse}}</a>
+          </mat-cell>
+        </ng-container>
+      
+        <ng-container matColumnDef="actions">
+          <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
+          <mat-cell *matCellDef="let course">
+            <a class="btn btn-light" [routerLink]="['/admin/course', course.id]">Edit</a>
+          </mat-cell>
+        </ng-container>
+      
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+      </mat-table>
+      
     </ng-container>
+    <table>
+      <tr *ngIf="!dataSource.data.length">
+        <td style="text-align: center;" [attr.colspan]="displayedColumns.length">
+          No Records Found!
+        </td>
+      </tr>
+    </table>
   
+  <mat-paginator
+    [pageSize]="1"
+    [pageSizeOptions]="[1, 2, 3]"
+    showFirstLastButtons
+  >
+  </mat-paginator>
   </div>
   
