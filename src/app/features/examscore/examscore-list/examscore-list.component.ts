@@ -32,23 +32,33 @@ export class ExamscoreListComponent implements OnInit{
       {
         name: 'STUDENTID',
         columnProp: 'stId',
-        options: []
+        options: [],
+        selectedValue:'',
+        inputValue:''
       }, {
         name: 'NAME',
         columnProp: 'student.name',
-        options: []
+        options: [],
+        selectedValue:'',
+        inputValue:''
       }, {
         name: 'COURSE',
         columnProp: 'course.nameCourse',
-        options: []
+        options: [],
+        selectedValue:'',
+        inputValue:''
       }, {
         name: 'CLASS',
         columnProp: 'student.class',
-        options: []
+        options: [],
+        selectedValue:'',
+        inputValue:''
       }, {
         name: 'SCORE',
         columnProp: 'score',
-        options: []
+        options: [],
+        selectedValue:'',
+        inputValue:''
       }
     ]
   }
@@ -108,56 +118,71 @@ export class ExamscoreListComponent implements OnInit{
     
     console.log('JSON: ',JSON.stringify(this.filterValues));
   }
-  // Custom filter method fot Angular Material Datatable
-  createFilter() {
-    let filterFunction = function (data: any, filter: string): boolean {
-      let searchTerms = JSON.parse(filter);
-      console.log('data1: ',data);
-      let isFilterSet = false;
-      for (const col in searchTerms) {
-        if (searchTerms[col].toString() !== '') {
-          isFilterSet = true;
-        } else {
-          delete searchTerms[col];
-        }
-      }
-
-      console.log(searchTerms);
-
-      let nameSearch = () => {
-        let found = false;
-        if (isFilterSet) {
-          for (const col in searchTerms) {
-            if (data[col] !== undefined) {
-              const props = col.split('.'); // Tách chuỗi col thành mảng các thuộc tính
-              let value = data;
-              props.forEach(prop => {
-                value = value[prop]; // Truy cập đến giá trị cuối cùng của thuộc tính
-              });
-              searchTerms[col].trim().toLowerCase().split(' ').forEach((word: string) => {
-                if (value && value.toString().toLowerCase().includes(word)) {
-                  found = true;
-                }
-              });
-            }
-          }
-          return found;
-        } else {
-          return true;
-        }
-      }
-      
-      return nameSearch()
+  onInputChange(filter:FilterSelectOption, event:any){}
+  getValueByNestedKey(obj:any, key:string) {
+    if (key.includes('.')) {
+      const keys = key.split('.');
+      return keys.reduce((acc, curr) => acc && acc[curr], obj);
+    } else {
+      return obj[key];
     }
-    return filterFunction
   }
+  // Custom filter method fot Angular Material Datatable
+// Custom filter method for Angular Material Datatable
+createFilter() {
+  let filterFunction = (data: any, filter: string): boolean => {
+    let searchTerms = JSON.parse(filter);
+    let isFilterSet = false;
+
+    // Kiểm tra xem có bộ lọc nào được áp dụng không
+    for (const col in searchTerms) {
+      if (searchTerms[col].toString() !== '') {
+        isFilterSet = true;
+        break;
+      }
+    }
+
+    // Nếu không có bộ lọc nào được áp dụng, trả về true
+    if (!isFilterSet) {
+      return true;
+    }
+
+    // Kiểm tra từng bộ lọc
+    for (const col in searchTerms) {
+      // Nếu bộ lọc không được nhập giá trị, bỏ qua
+      if (searchTerms[col].toString() === '') {
+        continue;
+      }
+
+      // Lấy giá trị từ key
+      const keys = col.split('.');
+      let value = data;
+      keys.forEach(key => {
+        value = value[key];
+      });
+
+      // Nếu giá trị không tồn tại hoặc không chứa từ khóa filter, trả về false
+      if (value === undefined || !value.toString().toLowerCase().includes(searchTerms[col].trim().toLowerCase())) {
+        return false;
+      }
+    }
+
+    // Nếu tất cả các điều kiện đều được thỏa mãn, trả về true
+    return true;
+  };
+
+  return filterFunction;
+}
+
+  
 
 
   // Reset table filters
   resetFilters() {
     this.filterValues = {}
     this.filterSelectObj.forEach((value, key) => {
-      value.modelValue = undefined;
+      value.selectedValue = '';
+      value.inputValue = '';
     })
     this.dataSource.filter = "";
   }

@@ -73,14 +73,27 @@
   <!-- </ng-container> -->
   <div>
     <div>
-      <mat-form-field *ngFor="let filter of filterSelectObj" style="margin-left: 15px;">
+      <!-- <mat-form-field *ngFor="let filter of filterSelectObj" style="margin-left: 15px;">
         <mat-label>Filter {{filter.name}}</mat-label>
-        <select matNativeControl name="{{filter.columnProp}}" [(ngModel)]="filter.modelValue"
+        <select matNativeControl name="{{filter.columnProp}}" [(ngModel)]="filter.selectedValue"
           (change)="filterChange(filter,$event)">
           <option value="">-- Select {{filter.name}} --</option>
           <option [value]="item" *ngFor="let item of filter.options">{{item}}</option>
         </select>
+        <input matInput [(ngModel)]="filter.inputValue" (input)="filterChange(filter, $event)"
+    [placeholder]="'Nhập giá trị'">
+      </mat-form-field> -->
+      <mat-form-field *ngFor="let filter of filterSelectObj" style="margin-left: 15px;">
+        <mat-label>Filter {{filter.name}}</mat-label>
+        <input matInput [matAutocomplete]="auto" [(ngModel)]="filter.selectedValue" (ngModelChange)="filterChange(filter, $event)"
+          [placeholder]="'Nhập giá trị'">
+        <mat-autocomplete #auto="matAutocomplete">
+          <mat-option *ngFor="let option of filter.options" [value]="option">
+            {{ option }}
+          </mat-option>
+        </mat-autocomplete>
       </mat-form-field>
+      
       &nbsp;
       <button mat-flat-button color="warn" (click)="resetFilters()">Reset</button>
     </div>
