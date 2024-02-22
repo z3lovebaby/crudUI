@@ -97,16 +97,19 @@ export class AuthService {
         map(response => {
           // Assuming the server returns a LoginResponseDto object
           const newAccessToken = response?.token;
-          //const newRefreshToken = response?.reToken;
+          const newRefreshToken = response?.reToken;
           console.log('response 1: ',response.token);
           if (!newAccessToken) {
             // Handle the case where the server did not return a new access token
             throw new Error('No new access token received.');
           }
-
+          if (!newRefreshToken) {
+            // Handle the case where the server did not return a new access token
+            throw new Error('No new refresh token received.');
+          }
           // Update the stored token in the cookie or wherever you store it
           //this.cookieService.set('Authorization', newAccessToken);
-          //this.cookieService.set('Refresh-Token', newRefreshToken);
+          this.cookieService.set('Refresh-Token', newRefreshToken,undefined, '/', undefined, false, 'Strict');
           this.cookieService.set('Authorization', `Bearer ${newAccessToken}`,
             undefined, '/', undefined, false, 'Strict');
 

@@ -1,8 +1,12 @@
 <div class="container">
   <h1 class="mt-3"><b>ExamScoreList</b></h1>
 
-  <div class="d-flex justify-content mt-3">
+  <div class="d-flex justify-content-end mt-3">
     <a [routerLink]="['/admin/examscores/add']" class="btn btn-primary">Add Examscore</a>
+  </div>
+  <div>
+    <mat-paginator [pageSize]="3" [length]="totalRecords" [pageSizeOptions]="[1,2,3]" (page)="goToPage($event)" showFirstLastButtons>
+    </mat-paginator>
   </div>
   <br>
   <!-- <ng-container>
@@ -90,7 +94,7 @@
     
 
     <div>
-      <mat-form-field *ngFor="let filter of filterSelectObj" style="margin-left: 15px;">
+      <mat-form-field *ngFor="let filter of filterSelectObj" style="margin-left: 15px;width: 17%;">
         <mat-label>Filter {{filter.name}}</mat-label>
         <input matInput [(ngModel)]="filter.inputValue" (input)="filterChange(filter, $event)"
           [placeholder]="'Nhập giá trị'" [matAutocomplete]="auto">
@@ -101,7 +105,7 @@
       
       
       &nbsp;
-      <button mat-flat-button color="warn" (click)="resetFilters()">Reset</button>
+      <button mat-flat-button color="warn" style="padding: 20px 0 20px 0;"(click)="resetFilters()">Reset</button>
     </div>
 
     <table mat-table matSort [dataSource]="dataSource">
@@ -148,19 +152,12 @@
       </tbody>
     </table>
   
-    <table>
+    <!-- <table>
       <tr *ngIf="!dataSource.data.length">
         <td style="text-align: center;" [attr.colspan]="displayedColumns.length">
           No Records Found!
         </td>
       </tr>
-    </table>
-  
+    </table> -->
   </div>
-  <mat-paginator
-    [pageSize]="1"
-    [pageSizeOptions]="[1, 2, 3]"
-    showFirstLastButtons
-  >
-  </mat-paginator>
 </div>

@@ -6,6 +6,12 @@
       <a [routerLink]="['/admin/students/add']" class="btn btn-primary">Add Student</a>
     </div>
   </ng-container>
+  <mat-paginator
+  [pageSize]="3"
+  [pageSizeOptions]="[1, 2, 3]"
+  showFirstLastButtons
+>
+</mat-paginator>
     <ng-container *ngIf="dataSource">
       <mat-table class="table table-bordered mt-3" [dataSource]="dataSource">
         <ng-container matColumnDef="studentID">
@@ -41,6 +47,7 @@
         <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
       </mat-table>      
     </ng-container>
+    
   <table>
       <tr *ngIf="!dataSource.data.length">
         <td style="text-align: center;" [attr.colspan]="displayedColumns.length">
@@ -48,11 +55,6 @@
         </td>
       </tr>
     </table>
-  <mat-paginator
-    [pageSize]="1"
-    [pageSizeOptions]="[1, 2, 3]"
-    showFirstLastButtons
-  >
-  </mat-paginator>
+
   </div>
   

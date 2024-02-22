@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ExamScoreService } from '../services/exam-score.service';
 import { UpdateExamScoreRequest } from '../model/update-examscore-request.model';
 import { ToastrService } from 'ngx-toastr';
+import { FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-edit-examscore',
@@ -13,6 +14,7 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class EditExamscoreComponent implements OnInit, OnDestroy{
   id: string | null = null;
+  score = new FormControl('', [Validators.required, Validators.min(0), Validators.max(10)]);
   paramsSubscription?: Subscription;
   editExamScoreSubscription?: Subscription;
   examscore?: ExamScore;
@@ -33,7 +35,8 @@ export class EditExamscoreComponent implements OnInit, OnDestroy{
           this.examscoreService.getExamScoreById(this.id)
           .subscribe({
             next: (response) => {
-              this.examscore = response;
+              console.log('ressss',response.data)
+              this.examscore = response.data;
             }
           });
 

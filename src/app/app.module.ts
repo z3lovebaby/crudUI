@@ -70,7 +70,7 @@ import { MatIconModule } from '@angular/material/icon';
     MatAutocompleteModule,
     ReactiveFormsModule,
     AsyncPipe,
-    MatIconModule
+    MatIconModule,
   ],
   providers: [
     {

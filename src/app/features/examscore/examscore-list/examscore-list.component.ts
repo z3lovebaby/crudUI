@@ -7,6 +7,7 @@ import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
 import { FilterSelectOption } from '../model/filter.model';
 import { FormControl } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-examscore-list',
@@ -15,9 +16,11 @@ import { FormControl } from '@angular/forms';
 })
 export class ExamscoreListComponent implements OnInit{
   displayedColumns: string[] = ['id', 'stId', 'studentName', 'courseName', 'studentClass', 'score', 'actions'];
-          dataSource = new MatTableDataSource<ExamScore>;
+          //dataSource = new MatTableDataSource();
+          dataSource2 = new MatTableDataSource();
           @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
           @ViewChild(MatSort, { static: true }) sort!: MatSort;
+  dataSource : any = []
   examscores$!: Observable<ExamScore[]>;
   examscoresFilter:any=[];
   examscores:any=[];
@@ -29,7 +32,16 @@ export class ExamscoreListComponent implements OnInit{
     scoreFilter = "";
     filterSelectObj : FilterSelectOption[]= [];
     filterValues: { [key: string]: string } = {};
-  constructor(private examscoreService: ExamScoreService) {
+    pageNumber: number = 1;
+  pageSize: number = 3;
+  totalPages: number = 0;
+  totalRecords: number = 0;
+  nextPage: string | null = null;
+  previousPage: string | null = null;
+  firstPage: string | null = null;
+  lastPage: string | null = null;
+  constructor(private examscoreService: ExamScoreService,
+    private http: HttpClient) {
     this.filterSelectObj = [
       {
         name: 'student id',
@@ -72,21 +84,13 @@ export class ExamscoreListComponent implements OnInit{
 
   ngOnInit(): void {
     this.FetchData();
-    this.dataSource.filterPredicate = this.createFilter()
+    this.dataSource2.filterPredicate = this.createFilter()
+    console.log('abcd: ',this.dataSource)
     this.filterSelectObj.forEach(obj => {
       obj.filteredOptions = this._filter(obj.inputValue || '', obj.options);
     });
+    console.log('final: ',this.dataSource)
   }
-  // getFilterObject(fullObj: any[], key: string): any[] {
-  //   const uniqChk: any[] = [];
-  //   fullObj.filter((obj: any) => {
-  //     if (!uniqChk.includes(obj[key])) {
-  //       uniqChk.push(obj[key]);
-  //     }
-  //     return obj;
-  //   });
-  //   return uniqChk;
-  // }
   private _filter(value: string, options: string[]): string[] {
     const filterValue = value.toLowerCase();
     return options.filter(option => option.toLowerCase().includes(filterValue));
@@ -107,17 +111,30 @@ export class ExamscoreListComponent implements OnInit{
   }
   
   FetchData(){
-    this.examscoreService.getAllExamScores().subscribe({
-      next: (examscore: ExamScore[]) => {
-        this.examscoresFilter = examscore;
-        this.dataSource.data = examscore;
+    this.examscoreService.getAllExamScores(this.pageNumber,this.pageSize,null).subscribe({
+      next: (res: any) => {
+        console.log('res',res.data)
+        this.examscoresFilter = res.data;
+        this.dataSource2.data = res.data;
+        this.dataSource = res.data
+        console.log('check ',this.dataSource)
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
         console.log('aaab ',this.dataSource);
+        this.pageNumber = res.pageNumber;
+        this.pageSize = res.pageSize;
+        this.totalPages = res.totalPages;
+        this.totalRecords = res.totalRecords;
+        this.nextPage = res.nextPage;
+        this.previousPage = res.previousPage;
+        this.firstPage = res.firstPage;
+        this.lastPage = res.lastPage;
         this.filterSelectObj.filter((o) => {
-          o.options = this.getFilterObject(examscore, o.columnProp);
+          o.options = this.getFilterObject(this.dataSource2.data, o.columnProp);
           o.filteredOptions = o.options
         });
+        console.log('log:',this.dataSource)
+        // this.dataSource2 = this.dataSource;
       },
       error: (error) => {
         console.error("Error fetching exam scores:", error);
@@ -141,7 +158,7 @@ export class ExamscoreListComponent implements OnInit{
     if (event.option) {
       // Nếu là sự kiện từ autocomplete, lấy giá trị của option được chọn
       value = event.option.value.toString();
-    } else {
+    } else{
       // Nếu là sự kiện từ trường input, lấy giá trị từ target
       value = event.target.value.trim().toLowerCase();
     }
@@ -150,14 +167,16 @@ export class ExamscoreListComponent implements OnInit{
     filter.filteredOptions = filter.options.filter(option =>
       option.toString().toLowerCase().includes(value)
     );
-    console.log('flter: ',filter.options)
+    console.log('flter: ',filter.filteredOptions)
     // Áp dụng bộ lọc mới vào dataSource
-    this.dataSource.filter = JSON.stringify(this.filterValues);
-  
-    console.log('JSON: ', JSON.stringify(this.filterValues));
+    this.dataSource2.filter = JSON.stringify(this.filterValues);
+    this.dataSource = this.dataSource2.filteredData;
+    this.totalRecords = this.dataSource.length
+    
+    console.log()
+    console.log('JSON: ',this.dataSource);
   }
   
-  onInputChange(filter:FilterSelectOption, event:any){}
   getValueByNestedKey(obj:any, key:string) {
     if (key.includes('.')) {
       const keys = key.split('.');
@@ -170,9 +189,10 @@ export class ExamscoreListComponent implements OnInit{
 // Custom filter method for Angular Material Datatable
 createFilter() {
   let filterFunction = (data: any, filter: string): boolean => {
+    // console.log('check22s: ',data,filter)
     let searchTerms = JSON.parse(filter);
     let isFilterSet = false;
-
+    console.log('check22s: ',searchTerms)
     // Kiểm tra xem có bộ lọc nào được áp dụng không
     for (const col in searchTerms) {
       if (searchTerms[col].toString() !== '') {
@@ -223,6 +243,63 @@ createFilter() {
       value.selectedValue = '';
       value.inputValue = '';
     })
-    this.dataSource.filter = "";
+    // this.dataSource = this.dataSource2;
+    // console.log(this.dataSource)
+    this.pageSize = this.paginator.pageSize
+    this.FetchData();
+    this.paginator.pageIndex = 0;
+
+  }
+  
+  goToPage(event: any) {
+    console.log('pre: ',this.previousPage);
+    console.log('next p: ',this.nextPage);
+   console.log('event',event);
+  //  event.previousPageIndex++;
+   event.pageIndex++;
+  //  if(event.previousPageIndex  > event.pageIndex) {
+     console.log('!next');
+     this.examscoreService.getAllExamScores(event.pageIndex,event.pageSize,null).subscribe({
+      next: (response: any) => {
+      console.log('test res',response)
+      this.dataSource = response.data;
+      // this.pageNumber = response.pageNumber;
+      // this.pageSize = response.pageSize;
+      // this.totalPages = response.totalPages;
+      this.totalRecords = response.totalRecords;
+      console.log(this.totalRecords)
+      // this.nextPage = response.nextPage;
+      // this.previousPage = response.previousPage;
+      // this.firstPage = response.firstPage;
+      // this.lastPage = response.lastPage;
+    },
+    error: (error) => {
+      console.error("Error fetching exam scores:", error);
+    }});
+    
+  //  } else {
+  //    // Clicked on previous button
+  //     this.examscoreService.getAllExamScores(this.pageNumber+1,this.pageSize,this.nextPage).subscribe({
+  //       next: (response: any) => {
+  //       console.log('test res',response)
+  //       this.dataSource.data = response.data;
+  //       console.log(this.dataSource.data)
+  //       this.pageNumber = response.pageNumber;
+  //       this.pageSize = response.pageSize;
+  //       this.totalPages = response.totalPages;
+  //       this.totalRecords = response.totalRecords;
+  //       this.nextPage = response.nextPage;
+  //       this.previousPage = response.previousPage;
+  //       this.firstPage = response.firstPage;
+  //       this.lastPage = response.lastPage;
+  //     },
+  //     error: (error) => {
+  //       console.error("Error fetching exam scores:", error);
+  //     }});
+  //    }
+   console.log('dataaaa',this.dataSource)
+   // The code that you want to execute on clicking on next and previous buttons will be written here.
+    // if (pageUrl) {
+    // }
   }
 }

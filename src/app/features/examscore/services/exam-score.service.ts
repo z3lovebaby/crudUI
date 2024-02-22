@@ -16,8 +16,9 @@ export class ExamScoreService {
   constructor(private http: HttpClient,
     private cookieService: CookieService) { }
   
-  getAllExamScores(): Observable<ExamScore[]> {
-      return this.http.get<ExamScore[]>(`${environment.apiBaseUrl}/api/examscore`);
+  getAllExamScores(pn:number,ps:number,api:string|null): Observable<any[]> {
+    console.log(pn,ps)
+      return this.http.get<any[]>(api?api:`${environment.apiBaseUrl}/api/examscore?pageNumber=${pn}&pageSize=${ps}`);
     }
     getScoreCourse(cId:string): Observable<ScoreCourse[]> {
       return this.http.get<ScoreCourse[]>(`${environment.apiBaseUrl}/api/examscore/GetExamScoresByCourse/${cId}`);
@@ -28,8 +29,8 @@ export class ExamScoreService {
   addExamScore(model: AddExamScoreRequest): Observable<string> {
       return this.http.post(`${environment.apiBaseUrl}/api/examscore?addAuth=true`, model,{ responseType: 'text' });
     }
-  getExamScoreById(id: string): Observable<ExamScore> {
-      return this.http.get<ExamScore>(`${environment.apiBaseUrl}/api/examscore/${id}`);
+  getExamScoreById(id: string): Observable<any> {
+      return this.http.get<any>(`${environment.apiBaseUrl}/api/examscore/${id}`);
     }
     updateExamScore(id: string, updateExamScoreRequest: UpdateExamScoreRequest): Observable<String> {
       const url = `${environment.apiBaseUrl}/api/examscore/?id=${id}&addAuth=true`;

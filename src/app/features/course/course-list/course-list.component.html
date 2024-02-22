@@ -1,11 +1,17 @@
 <div class="container">
 
     <h1 class="mt-3">Course List</h1>
-  
-    <div class="d-flex justify-content-end mt-3">
+    <div class="a">
+          <div class="d-flex justify-content-end mt-3">
       <a [routerLink]="['/admin/courses/add']" class="btn btn-primary">Add Course</a>
     </div>
-  
+    <mat-paginator
+    [pageSize]="3"
+    [pageSizeOptions]="[1, 2, 3]"
+    showFirstLastButtons
+  >
+  </mat-paginator>
+    </div>
     <ng-container>
       <mat-table class="table table-bordered mt-3" [dataSource]="dataSource">
         <ng-container matColumnDef="id">
@@ -39,12 +45,5 @@
         </td>
       </tr>
     </table>
-  
-  <mat-paginator
-    [pageSize]="1"
-    [pageSizeOptions]="[1, 2, 3]"
-    showFirstLastButtons
-  >
-  </mat-paginator>
   </div>
   

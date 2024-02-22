@@ -14,15 +14,44 @@
             name="examscoreId"
             value="{{examscore.id}}">
           </div>
+          <div class="mt-3">
+            <label class="form-label" for="course">Course</label>
+            <input type="text" disabled
+            id="course"
+            class="form-control"
+            name="course"
+            value="{{examscore.course.nameCourse}}">
+          </div>
+          <div class="mt-3">
+            <label class="form-label" for="stName">Student Name</label>
+            <input type="text" disabled
+            id="stName"
+            class="form-control"
+            name="stName"
+            value="{{examscore.student.name}}">
+          </div>
+          <div class="mt-3">
+            <label class="form-label" for="stID">Student ID</label>
+            <input type="text" disabled
+            id="stID"
+            class="form-control"
+            name="stID"
+            value="{{examscore.stId}}">
+          </div>
   
           <div class="mt-3">
-            <label class="form-label" for="examscoreName">Score Update</label>
+            <label class="form-label" for="score">Score Update</label>
             <input type="number"
-            id="score"
-            class="form-control"
-            name="score"
-            [(ngModel)]="examscore.score">
-          </div>
+                id="score"
+                class="form-control"
+                [formControl]="score"
+                name="score"
+                [(ngModel)]="examscore.score">
+            <mat-error class="text-danger mt-3" *ngIf="score.hasError('required')">Score is required</mat-error>
+            <mat-error class="text-danger mt-3" *ngIf="score.hasError('min')">Score must be at least 0</mat-error>
+            <mat-error class="text-danger mt-3" *ngIf="score.hasError('max')">Score must be at most 10</mat-error>
+        </div>
+        
 
   
   
